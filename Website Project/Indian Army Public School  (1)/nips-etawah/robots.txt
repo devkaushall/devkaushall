@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /data/
+Disallow: /build_pages.py
+Disallow: /server.py
+
+Sitemap: https://nipsetawah.com/sitemap.xml

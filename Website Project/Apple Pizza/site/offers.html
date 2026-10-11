@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offers & Combos — Apple's Pizza Etawah | 40% Off Pizzas, Pizza Mania Combos</title>
+<meta name="description" content="Current Apple's Pizza Etawah offers: flat 40% off on pizzas, Weekend Pizza Blast, Combo Night, Cheese Burst crust upgrades and Pizza Mania combo meals from ₹300.">
+<link rel="icon" href="assets/img/logo.jpeg" type="image/jpeg">
+<link rel="canonical" href="offers.html">
+<link rel="stylesheet" href="assets/css/style.css">
+<script defer src="assets/js/data.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header id="siteHeader"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="crumbs"><a href="index.html">Home</a> / Offers</p>
+      <h1>Offers &amp; Combos</h1>
+      <p>Only promotions published by Apple's Pizza itself — no invented coupon codes. Conditions shown exactly as advertised; the outlet confirms validity when you order.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="offer-grid" id="allOffers"></div>
+
+      <h2 style="font-weight:900;color:var(--blue-ink);margin:44px 0 8px">Pizza Mania combo meals</h2>
+      <p style="color:var(--muted);font-weight:600;max-width:70ch;margin-bottom:20px">The official "Combo Night" idea, priced straight from the menu — multi-pizza packs that work out cheaper per slice.</p>
+      <div class="grid" id="comboGrid"></div>
+
+      <div class="honest-note" style="margin-top:34px;max-width:820px"><strong>How offers work here:</strong> the 40% pizza discount is applied automatically in our menu prices (strike-through MRP → your price). Crust, cheese and topping upgrades are priced per size in the item customiser. Published promos above carry no expiry date from the brand; treat them as current-at-source (official platform, 10 Oct 2026) and confirm at the outlet.</div>
+    </div>
+  </section>
+</main>
+
+<footer id="siteFooter"></footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var AP = window.AP, D = AP.D;
+  var BAN = {
+    "Flat 40% OFF on Pizzas": "Weekend Pizza Blast",
+    "Weekend Pizza Blast": "Weekend Pizza Blast",
+    "Combo Night": "Combo Night",
+    "Cheese Burst Festival": "Cheese Burst Festival",
+    "Sweet Ending": "Sweet Ending"
+  };
+  document.getElementById("allOffers").innerHTML = D.offers.map(function (o) {
+    var b = D.banners.find(function (x) { return x.title === BAN[o.title]; });
+    return '<article class="offer-card reveal">' + (b && b.img ? '<img loading="lazy" src="' + b.img + '" alt="">' : "") +
+      '<span class="offer-tag">' + AP.esc(o.tag) + '</span><div class="veil"><h3>' + AP.esc(o.title) + "</h3><p>" + AP.esc(o.desc) + '</p><p class="offer-terms">Terms: ' + AP.esc(o.terms) + "</p></div></article>";
+  }).join("");
+  var combos = D.items.filter(function (i) { return AP.catById(i.cat).title.indexOf("Combo") === 0; });
+  document.getElementById("comboGrid").innerHTML = combos.map(AP.productCard).join("");
+});
+</script>
+</body>
+</html>

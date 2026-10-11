@@ -1,0 +1,12 @@
+{
+  "name": "nips-etawah-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Official-style website for New Indian Public School, Etawah (redesign). Zero-dependency Node server + static pages.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

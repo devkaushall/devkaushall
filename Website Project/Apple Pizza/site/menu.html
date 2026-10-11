@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menu — Apple's Pizza Etawah | Veg Pizzas from ₹84, Garlic Bread, Combos</title>
+<meta name="description" content="Full Apple's Pizza Etawah menu: Smply Veg, Veg Treat, Veg Special, Veg Feast pizzas, Pizza Mania singles/doubles/combos, garlic breads, pockets & beverages. Live prices with 40% off.">
+<link rel="icon" href="assets/img/logo.jpeg" type="image/jpeg">
+<link rel="canonical" href="menu.html">
+<link rel="stylesheet" href="assets/css/style.css">
+<script defer src="assets/js/data.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header id="siteHeader"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="crumbs"><a href="index.html">Home</a> / Menu</p>
+      <h1>The Full Menu</h1>
+      <p>Every item is 100% vegetarian. Prices below already include the live 40% pizza discount where applicable; sizes and crust/cheese/topping upgrades are priced per size. Synced from the official ordering platform on 10 Oct 2026.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:34px">
+    <div class="container">
+      <div class="menu-tools">
+        <label class="search-box">🔍<input id="q" type="search" placeholder="Search pizzas, toppings, breads…" aria-label="Search the menu"></label>
+        <select class="sort-sel" id="sort" aria-label="Sort items">
+          <option value="menu">Menu order</option>
+          <option value="low">Price: low → high</option>
+          <option value="high">Price: high → low</option>
+          <option value="az">Name A–Z</option>
+        </select>
+      </div>
+      <div class="menu-layout">
+        <nav class="menu-side" id="sideCats" aria-label="Menu categories"></nav>
+        <div>
+          <p id="resCount" style="font-weight:800;color:var(--muted);font-size:.85rem;margin-bottom:14px" role="status"></p>
+          <div class="grid" id="menuGrid"></div>
+          <div class="empty-state" id="noRes" hidden>
+            <h3>No dishes match</h3>
+            <p>Try a different search word — or browse a category on the left.</p>
+            <button class="btn btn-blue btn-sm" id="clearQ" style="margin-top:12px">Clear search</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="siteFooter"></footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var AP = window.AP, D = AP.D;
+  var state = { cat: "all", q: "", sort: "menu" };
+
+  function price0(it) { var s = it.sizes[0] || { price: 0 }; return AP.netPrice(it, s.price); }
+
+  function renderSide() {
+    var counts = {};
+    D.items.forEach(function (i) { counts[i.cat] = (counts[i.cat] || 0) + 1; });
+    var html = '<button data-cat="all" aria-current="' + (state.cat === "all") + '">All items <span class="n">' + D.items.length + '</span></button>';
+    html += D.categories.map(function (c) {
+      return '<button data-cat="' + c.id + '" aria-current="' + (state.cat === c.id) + '">' + AP.esc(c.title) + ' <span class="n">' + (counts[c.id] || 0) + '</span></button>';
+    }).join("");
+    var side = document.getElementById("sideCats");
+    side.innerHTML = html;
+    Array.prototype.forEach.call(side.querySelectorAll("button"), function (b) {
+      b.addEventListener("click", function () { state.cat = b.getAttribute("data-cat"); render(); });
+    });
+  }
+
+  function render() {
+    renderSide();
+    var list = D.items.filter(function (i) { return state.cat === "all" || i.cat === state.cat; });
+    if (state.q) {
+      var q = state.q.toLowerCase();
+      list = list.filter(function (i) { return (i.name + " " + (i.desc || "") + " " + AP.catById(i.cat).title).toLowerCase().indexOf(q) !== -1; });
+    }
+    if (state.sort === "low") list = list.slice().sort(function (a, b) { return price0(a) - price0(b); });
+    if (state.sort === "high") list = list.slice().sort(function (a, b) { return price0(b) - price0(a); });
+    if (state.sort === "az") list = list.slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
+
+    document.getElementById("menuGrid").innerHTML = list.map(AP.productCard).join("");
+    document.getElementById("noRes").hidden = list.length > 0;
+    document.getElementById("resCount").textContent = list.length + (list.length === 1 ? " item" : " items") + (state.cat !== "all" ? " in " + AP.catById(state.cat).title : "") + (state.q ? ' matching "' + state.q + '"' : "");
+  }
+
+  document.getElementById("q").addEventListener("input", function (e) { state.q = e.target.value.trim(); render(); });
+  document.getElementById("sort").addEventListener("change", function (e) { state.sort = e.target.value; render(); });
+  document.getElementById("clearQ").addEventListener("click", function () { state.q = ""; document.getElementById("q").value = ""; render(); });
+
+  // deep link #cat-xxxx
+  var m = location.hash.match(/^#cat-([a-f0-9]+)/i);
+  if (m) {
+    var found = D.categories.find(function (c) { return c.id.indexOf(m[1]) === 0; });
+    if (found) state.cat = found.id;
+  }
+  render();
+});
+</script>
+</body>
+</html>

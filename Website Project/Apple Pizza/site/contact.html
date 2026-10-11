@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Apple's Pizza Etawah | Call, WhatsApp, Email & Outlet Addresses</title>
+<meta name="description" content="Contact Apple's Pizza Etawah: call +91 89380 09090, email appizza7252@gmail.com, or visit MKD Supermart Friends Colony / KKDC Gate Pakka Talab. Open 10 AM – 10 PM.">
+<link rel="icon" href="assets/img/logo.jpeg" type="image/jpeg">
+<link rel="canonical" href="contact.html">
+<link rel="stylesheet" href="assets/css/style.css">
+<script defer src="assets/js/data.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header id="siteHeader"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="crumbs"><a href="index.html">Home</a> / Contact</p>
+      <h1>Talk to us</h1>
+      <p>Fastest route is a call — the kitchen answers during opening hours. Everything below is verified from the brand's public listings.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start" id="contactGrid">
+      <div>
+        <div class="stat" style="text-align:left;display:flex;gap:16px;align-items:center;margin-bottom:14px">
+          <span style="font-size:1.6rem">📞</span>
+          <div><b style="font-size:1.1rem"><a href="tel:+918938009090" style="text-decoration:none">+91 89380 09090</a></b><span>Primary phone · tap to call</span></div>
+        </div>
+        <div class="stat" style="text-align:left;display:flex;gap:16px;align-items:center;margin-bottom:14px">
+          <span style="font-size:1.6rem">💬</span>
+          <div><b style="font-size:1.1rem">WhatsApp</b><span>Same number — send your cart from the <a href="cart.html">checkout</a></span></div>
+        </div>
+        <div class="stat" style="text-align:left;display:flex;gap:16px;align-items:center;margin-bottom:14px">
+          <span style="font-size:1.6rem">✉️</span>
+          <div><b style="font-size:1.1rem"><a href="mailto:appizza7252@gmail.com" style="text-decoration:none">appizza7252@gmail.com</a></b><span>Email · from the brand's Facebook page</span></div>
+        </div>
+        <div class="stat" style="text-align:left;display:flex;gap:16px;align-items:center;margin-bottom:14px">
+          <span style="font-size:1.6rem">📘</span>
+          <div><b style="font-size:1.1rem"><a href="https://www.facebook.com/Applespizzaetw/" target="_blank" rel="noopener" style="text-decoration:none">facebook.com/Applespizzaetw</a></b><span>Official Facebook page</span></div>
+        </div>
+        <div class="stat" style="text-align:left;display:flex;gap:16px;align-items:center">
+          <span style="font-size:1.6rem">🕙</span>
+          <div><b style="font-size:1.1rem">10:00 AM – 10:00 PM</b><span>Open all week · some listings say 9 PM close, call late evenings</span></div>
+        </div>
+      </div>
+
+      <form id="cForm" novalidate style="background:#fff;border:2px solid var(--line);border-radius:var(--r-lg);padding:26px">
+        <h2 style="font-weight:900;color:var(--blue-ink);margin-bottom:6px">Send a message</h2>
+        <p style="font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:16px">There is no server behind this form — submitting opens your email app with everything pre-filled, addressed to the brand's public email. Nothing is stored on this website.</p>
+        <div class="field"><label for="cName">Your name *</label><input id="cName" autocomplete="name"><span class="err">Name is required.</span></div>
+        <div class="field"><label for="cMail">Your email *</label><input id="cMail" type="email" autocomplete="email"><span class="err">A valid email is required so the outlet can reply.</span></div>
+        <div class="field"><label for="cMsg">Message *</label><textarea id="cMsg" rows="4" placeholder="Feedback, bulk order, party booking…"></textarea><span class="err">Please write a short message.</span></div>
+        <!-- honeypot -->
+        <div class="field" style="position:absolute;left:-9999px" aria-hidden="true"><label for="cWeb">Website</label><input id="cWeb" tabindex="-1" autocomplete="off"></div>
+        <button class="btn btn-primary" type="submit">Open in my email app →</button>
+        <p id="cStatus" role="status" style="font-size:.8rem;font-weight:800;margin-top:12px;color:var(--leaf)" hidden></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer id="siteFooter"></footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var AP = window.AP;
+  document.getElementById("cForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (document.getElementById("cWeb").value) return; // bot
+    var n = document.getElementById("cName").value.trim();
+    var m = document.getElementById("cMail").value.trim();
+    var t = document.getElementById("cMsg").value.trim();
+    var ok = true;
+    function bad(id, b) { document.getElementById(id).closest(".field").classList.toggle("invalid", b); ok = ok && !b; }
+    bad("cName", n.length < 2);
+    bad("cMail", !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m));
+    bad("cMsg", t.length < 5);
+    if (!ok) { AP.toast("Please fix the highlighted fields"); return; }
+    var body = encodeURIComponent("Hello Apple's Pizza,\n\n" + t + "\n\n— " + n + "\nReply-to: " + m + "\n(Sent via the Apple's Pizza website contact form)");
+    location.href = "mailto:appizza7252@gmail.com?subject=" + encodeURIComponent("Website message from " + n) + "&body=" + body;
+    var st = document.getElementById("cStatus");
+    st.hidden = false;
+    st.textContent = "Your email app should now open with the message ready. If it didn't, write directly to appizza7252@gmail.com or call +91 89380 09090.";
+  });
+});
+</script>
+</body>
+</html>

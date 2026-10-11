@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outlets — Apple's Pizza Etawah | MKD Supermart Friends Colony & KKDC Gate Pakka Talab</title>
+<meta name="description" content="Apple's Pizza Etawah outlet addresses, maps, hours and services: 1st Floor MKD Supermart, Friends Colony and Near KKDC 1st Gate, Pakka Talab, Ashok Nagar. Call +91 89380 09090.">
+<link rel="icon" href="assets/img/logo.jpeg" type="image/jpeg">
+<link rel="canonical" href="outlets.html">
+<link rel="stylesheet" href="assets/css/style.css">
+<script defer src="assets/js/data.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header id="siteHeader"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="crumbs"><a href="index.html">Home</a> / Outlets</p>
+      <h1>Find your outlet</h1>
+      <p>Two neighbourhood outlets across Etawah. Tap to call, copy the address, or open directions — and choose your outlet in the header before ordering.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container outlet-grid" id="outletFull"></div>
+    <div class="container">
+      <div class="honest-note" style="margin-top:34px;max-width:860px"><strong>Please note:</strong> addresses, ratings and hours are taken from the outlets' public Justdial listings and the brand's own pages (checked 10 Oct 2026). Closing time shows as 9 PM on some listings and 10 PM on others — call ahead late evening. Delivery radius, minimum order and fees are set by each outlet and confirmed on call.</div>
+    </div>
+  </section>
+</main>
+
+<footer id="siteFooter"></footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var AP = window.AP, D = AP.D;
+  document.getElementById("outletFull").innerHTML = D.outlets.map(function (o) {
+    return '<article class="outlet-card reveal" id="' + o.id + '">' +
+      '<div class="top"><h3>' + AP.esc(o.name) + '</h3><span class="rate">' + AP.esc(o.rating) + '</span></div>' +
+      '<div class="body">' +
+      '<p class="addr">' + AP.esc(o.address) + ' <button class="copy-btn" data-copy="' + AP.esc(o.address) + '">copy</button></p>' +
+      (o.mapsPlus ? '<p style="font-size:.8rem;font-weight:800;color:var(--muted)">Plus code: ' + o.mapsPlus + "</p>" : "") +
+      '<p style="font-size:.85rem;font-weight:700;color:var(--muted)">⏰ ' + AP.esc(o.hours) + ' · ' + AP.esc(o.since) + "</p>" +
+      '<div class="meta-row">' + o.services.map(function (s) { return '<span class="meta-pill">' + s + "</span>"; }).join("") + "</div>" +
+      '<div class="outlet-actions">' +
+      '<a class="btn btn-blue btn-sm" href="' + o.maps + '" target="_blank" rel="noopener"> Get directions</a>' +
+      '<a class="btn btn-primary btn-sm" href="tel:+918938009090">📞 Call outlet</a>' +
+      '<button class="btn btn-ghost btn-sm" data-choose="' + o.id + '">Order from here</button>' +
+      "</div></div></article>";
+  }).join("");
+  document.getElementById("outletFull").addEventListener("click", function (e) {
+    var c = e.target.closest("[data-copy]");
+    if (c) {
+      var txt = c.getAttribute("data-copy");
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function () { AP.toast("Address copied"); });
+      else AP.toast(txt);
+      return;
+    }
+    var ch = e.target.closest("[data-choose]");
+    if (ch) {
+      AP.setOutlet(ch.getAttribute("data-choose"));
+      var sel = document.getElementById("outletSel");
+      if (sel) sel.value = ch.getAttribute("data-choose");
+      AP.toast("Outlet set — now build your cart");
+      setTimeout(function () { location.href = "menu.html"; }, 700);
+    }
+  });
+});
+</script>
+</body>
+</html>

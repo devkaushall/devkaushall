@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cart & Checkout — Apple's Pizza Etawah</title>
+<meta name="description" content="Review your Apple's Pizza cart, choose delivery or pickup at Friends Colony / Pakka Talab Etawah, and place your order by call or WhatsApp.">
+<link rel="icon" href="assets/img/logo.jpeg" type="image/jpeg">
+<link rel="canonical" href="cart.html">
+<link rel="stylesheet" href="assets/css/style.css">
+<script defer src="assets/js/data.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header id="siteHeader"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="crumbs"><a href="index.html">Home</a> / Cart</p>
+      <h1>Your Cart</h1>
+      <p>Check your items and customisations, then send the order to your outlet by call or WhatsApp. No online payment is taken on this website.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:34px">
+    <div class="container">
+      <div class="cart-layout">
+        <div>
+          <div class="cart-lines" id="lines"></div>
+          <div class="empty-state" id="emptyCart">
+            <h3>Your cart is hungry 🍕</h3>
+            <p>Nothing here yet. Head to the menu and add something cheesy.</p>
+            <a class="btn btn-primary btn-sm" href="menu.html" style="margin-top:14px">Browse the menu</a>
+          </div>
+
+          <form id="checkout" novalidate style="margin-top:26px" hidden>
+            <h2 style="font-weight:900;color:var(--blue-ink);margin-bottom:16px">How should we get it to you?</h2>
+            <div class="mode-toggle" role="radiogroup" aria-label="Order method">
+              <label><input type="radio" name="mode" value="delivery" checked><span>🛵 Home delivery</span></label>
+              <label><input type="radio" name="mode" value="pickup"><span>🏃 Pickup at outlet</span></label>
+            </div>
+            <div class="field"><label for="fOutlet">Outlet *</label>
+              <select id="fOutlet"></select>
+              <span class="err">Please choose an outlet.</span></div>
+            <div class="field"><label for="fName">Your name *</label>
+              <input id="fName" name="name" autocomplete="name" placeholder="e.g. Rohan Sharma">
+              <span class="err">Please tell us your name (min 2 letters).</span></div>
+            <div class="field"><label for="fPhone">Mobile number *</label>
+              <input id="fPhone" name="phone" inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile">
+              <span class="err">Enter a valid 10-digit Indian mobile number.</span></div>
+            <div class="field" id="addrField"><label for="fAddr">Delivery address in Etawah *</label>
+              <textarea id="fAddr" rows="3" placeholder="House / street / landmark — delivery coverage confirmed by the outlet on call"></textarea>
+              <span class="err">A delivery address is required (min 12 characters).</span></div>
+            <div class="field"><label for="fNote">Note (optional)</label>
+              <input id="fNote" placeholder="e.g. extra oregano, ring the bell twice…"></div>
+            <button class="btn btn-primary" type="submit" style="width:100%">Review &amp; send order →</button>
+            <p class="honest-note" style="margin-top:14px"><strong>Honest checkout:</strong> this website does not process payments or push orders into the restaurant's system. On the next step you'll get a ready-made order message for WhatsApp or a one-tap call — the outlet confirms availability, delivery area and payment (cash/UPI at outlet or on delivery) directly.</p>
+          </form>
+
+          <div id="donePanel" hidden style="margin-top:26px">
+            <div class="sum-card" style="position:static;border-color:var(--leaf)">
+              <h2 style="font-weight:900;color:var(--leaf);margin-bottom:8px">Order ready to send ✅</h2>
+              <pre id="orderText" style="white-space:pre-wrap;font:inherit;font-size:.9rem;background:var(--cream);border-radius:12px;padding:14px;border:1.5px dashed var(--line)"></pre>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+                <a class="btn btn-primary" id="waBtn" target="_blank" rel="noopener">Send on WhatsApp</a>
+                <a class="btn btn-blue" href="tel:+918938009090">Call the outlet instead</a>
+              </div>
+              <p style="font-size:.78rem;color:var(--muted);font-weight:700;margin-top:12px">WhatsApp not reachable? Call +91 89380 09090 (or your outlet) and read out the same order. Prefer an app? <a href="https://www.zomato.com/etawah/apples-pizza-etawah-locality/order" rel="noopener" target="_blank">Order on Zomato ↗</a> or the <a href="https://www.applespizza.com/home" rel="noopener" target="_blank">official ordering site ↗</a>.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="sum-card" aria-label="Bill summary">
+          <h2 style="font-weight:900;color:var(--blue-ink);margin-bottom:10px">Bill summary</h2>
+          <div class="sum-row"><span>Item total</span><span id="sumSub">₹0</span></div>
+          <div class="sum-row"><span>You save (40% off)</span><span class="save" id="sumSave">₹0</span></div>
+          <div class="sum-row"><span>Delivery fee</span><span>confirmed by outlet</span></div>
+          <div class="sum-row total"><span>To pay</span><span id="sumTotal">₹0</span></div>
+          <p style="font-size:.75rem;color:var(--muted);font-weight:700;margin-top:10px">Taxes included in menu prices. Final payable amount is confirmed by the outlet at order time.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="siteFooter"></footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var AP = window.AP, D = AP.D;
+  var linesEl = document.getElementById("lines");
+
+  function render() {
+    var cart = AP.cart;
+    document.getElementById("emptyCart").hidden = cart.length > 0;
+    document.getElementById("checkout").hidden = cart.length === 0;
+    document.getElementById("donePanel").hidden = true;
+    linesEl.innerHTML = cart.map(function (l) {
+      var media = l.img ? '<img src="' + l.img + '" alt="">' : '<div class="noimg">' + AP.esc(l.name.slice(0, 1)) + "</div>";
+      return '<div class="line-card">' + media +
+        '<div class="line-meta"><strong>' + AP.esc(l.name) + '</strong><small>' + AP.esc(l.size) +
+        (l.mods.length ? " · " + l.mods.map(function (m) { return m.name; }).join(", ") : "") + "</small>" +
+        '<div class="qty" style="margin-top:8px"><button type="button" data-q="-1" data-key="' + AP.esc(l.key) + '" aria-label="Decrease">−</button><output>' + l.qty + '</output><button type="button" data-q="1" data-key="' + AP.esc(l.key) + '" aria-label="Increase">+</button></div></div>' +
+        '<div class="line-right"><span class="line-total">' + AP.fmt(l.unit * l.qty) + '</span><button class="copy-btn" data-rm="' + AP.esc(l.key) + '">remove</button></div></div>';
+    }).join("");
+    var t = AP.cartTotals();
+    document.getElementById("sumSub").textContent = AP.fmt(t.sub);
+    document.getElementById("sumSave").textContent = "− " + AP.fmt(t.save);
+    document.getElementById("sumTotal").textContent = AP.fmt(t.sub);
+  }
+  render();
+  document.addEventListener("ap:cart", render);
+
+  linesEl.addEventListener("click", function (e) {
+    var q = e.target.closest("[data-q]");
+    if (q) {
+      var l = AP.cart.find(function (x) { return x.key === q.getAttribute("data-key"); });
+      if (l) AP.setQty(l.key, l.qty + parseInt(q.getAttribute("data-q"), 10));
+      return;
+    }
+    var rm = e.target.closest("[data-rm]");
+    if (rm) { AP.setQty(rm.getAttribute("data-rm"), 0); AP.toast("Removed from cart"); }
+  });
+
+  // outlet select
+  var sel = document.getElementById("fOutlet");
+  sel.innerHTML = D.outlets.map(function (o) { return '<option value="' + o.id + '">' + AP.esc(o.name) + " — " + AP.esc(o.short) + "</option>"; }).join("");
+  sel.value = AP.getOutlet();
+
+  var modeInputs = document.querySelectorAll('input[name="mode"]');
+  function syncMode() {
+    document.getElementById("addrField").hidden = document.querySelector('input[name="mode"]:checked').value !== "delivery";
+  }
+  Array.prototype.forEach.call(modeInputs, function (r) { r.addEventListener("change", syncMode); });
+  syncMode();
+
+  function bad(id, isBad) {
+    document.getElementById(id).closest(".field").classList.toggle("invalid", isBad);
+    return isBad;
+  }
+
+  document.getElementById("checkout").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var mode = document.querySelector('input[name="mode"]:checked').value;
+    var name = document.getElementById("fName").value.trim();
+    var phone = document.getElementById("fPhone").value.replace(/\D/g, "");
+    if (phone.length === 12 && phone.indexOf("91") === 0) phone = phone.slice(2);
+    var addr = document.getElementById("fAddr").value.trim();
+    var note = document.getElementById("fNote").value.trim();
+    var ok = true;
+    ok = !bad("fName", name.length < 2) && ok;
+    ok = !bad("fPhone", !/^[6-9]\d{9}$/.test(phone)) && ok;
+    ok = !bad("fAddr", mode === "delivery" && addr.length < 12) && ok;
+    if (!AP.cart.length) { AP.toast("Cart is empty"); return; }
+    if (!ok) { AP.toast("Please fix the highlighted fields"); return; }
+
+    var outlet = D.outlets.find(function (o) { return o.id === sel.value; });
+    var t = AP.cartTotals();
+    var linesTxt = AP.cart.map(function (l) {
+      return "• " + l.qty + " × " + l.name + " (" + l.size + (l.mods.length ? "; +" + l.mods.map(function (m) { return m.name; }).join(", +") : "") + ") = " + AP.fmt(l.unit * l.qty);
+    }).join("\n");
+    var txt = "NEW ORDER — Apple's Pizza (" + outlet.name + ")\n" +
+      "Name: " + name + "\nPhone: " + phone + "\nMode: " + (mode === "delivery" ? "Home delivery" : "Pickup") + "\n" +
+      (mode === "delivery" ? "Address: " + addr + "\n" : "") +
+      (note ? "Note: " + note + "\n" : "") +
+      "----\n" + linesTxt + "\n----\nItem total: " + AP.fmt(t.sub) + " (saved " + AP.fmt(t.save) + " via 40% off)\nDelivery fee & payment: to be confirmed by outlet\n(Sent from applespizza website cart)";
+    document.getElementById("orderText").textContent = txt;
+    document.getElementById("waBtn").href = "https://wa.me/918938009090?text=" + encodeURIComponent(txt);
+    document.getElementById("donePanel").hidden = false;
+    document.getElementById("donePanel").scrollIntoView({ behavior: "smooth", block: "start" });
+    AP.toast("Order prepared — send it on WhatsApp or call");
+  });
+});
+</script>
+</body>
+</html>

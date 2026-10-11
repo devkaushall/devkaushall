@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gallery — Apple's Pizza Etawah | Pizzas, Outlets & Moments</title>
+<meta name="description" content="Photo gallery of Apple's Pizza Etawah: loaded veg pizzas, garlic breads, outlet interiors, signage and happy table moments from the brand's public listings.">
+<link rel="icon" href="assets/img/logo.jpeg" type="image/jpeg">
+<link rel="canonical" href="gallery.html">
+<link rel="stylesheet" href="assets/css/style.css">
+<script defer src="assets/js/data.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header id="siteHeader"></header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="crumbs"><a href="index.html">Home</a> / Gallery</p>
+      <h1>The Gallery</h1>
+      <p>Real photos from the brand's own public listings and official menu — pizzas, outlets and the people who love them.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="gal-filters" role="group" aria-label="Filter gallery">
+        <button class="chip" aria-pressed="true" data-f="all">All</button>
+        <button class="chip" aria-pressed="false" data-f="food">Food</button>
+        <button class="chip" aria-pressed="false" data-f="outlet">Outlets</button>
+        <button class="chip" aria-pressed="false" data-f="menu">Menu shots</button>
+      </div>
+      <div class="gal-grid" id="gal"></div>
+    </div>
+  </section>
+
+  <div class="lightbox" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="lb-close" id="lbClose" aria-label="Close viewer">✕</button>
+    <figure><img id="lbImg" src="" alt=""><figcaption class="cap" id="lbCap"></figcaption></figure>
+  </div>
+</main>
+
+<footer id="siteFooter"></footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var AP = window.AP, D = AP.D;
+  var shots = [
+    { s: "gallery/food-3.jpg", c: "food", a: "Loaded veg pizza with capsicum, corn and paneer" },
+    { s: "gallery/food-2.jpg", c: "food", a: "Guests sharing pizzas at a red Apple's Pizza table" },
+    { s: "gallery/food-1.jpg", c: "food", a: "Fresh pizza served at the outlet" },
+    { s: "gallery/outlet-friends-colony-1.jpg", c: "outlet", a: "Early flame-style Apple's Pizza artwork" },
+    { s: "gallery/outlet-friends-colony-2.jpg", c: "outlet", a: "Friends Colony outlet photo" },
+    { s: "gallery/outlet-friends-colony-3.jpg", c: "outlet", a: "Outlet at MKD Supermart, Friends Colony" },
+    { s: "gallery/outlet-ashok-nagar-1.jpg", c: "outlet", a: "Apple's Pizza signage, Ashok Nagar outlet" },
+    { s: "gallery/outlet-ashok-nagar-2.jpg", c: "outlet", a: "Pakka Talab outlet photo" },
+    { s: "gallery/ambience-1.jpg", c: "outlet", a: "Dine-in corner with Swad Ki Home Delivery banners" },
+    { s: "gallery/ambience-2.jpg", c: "outlet", a: "Seating area at the outlet" }
+  ];
+  // menu shots: product photos with images
+  D.items.filter(function (i) { return i.img; }).slice(0, 12).forEach(function (i) {
+    shots.push({ s: i.img.replace("assets/img/", ""), c: "menu", a: i.name + " — official menu photo" });
+  });
+
+  var cur = "all";
+  function render() {
+    var list = cur === "all" ? shots : shots.filter(function (x) { return x.c === cur; });
+    document.getElementById("gal").innerHTML = list.map(function (g, i) {
+      return '<figure class="gal-item" data-i="' + shots.indexOf(g) + '"><img loading="lazy" src="assets/img/' + g.s + '" alt="' + AP.esc(g.a) + '"><figcaption>' + AP.esc(g.a) + "</figcaption></figure>";
+    }).join("");
+  }
+  render();
+  document.querySelectorAll(".chip").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".chip").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+      cur = b.getAttribute("data-f");
+      render();
+    });
+  });
+
+  var lb = document.getElementById("lb");
+  document.getElementById("gal").addEventListener("click", function (e) {
+    var f = e.target.closest(".gal-item");
+    if (!f) return;
+    var g = shots[parseInt(f.getAttribute("data-i"), 10)];
+    document.getElementById("lbImg").src = "assets/img/" + g.s;
+    document.getElementById("lbImg").alt = g.a;
+    document.getElementById("lbCap").textContent = g.a;
+    lb.hidden = false;
+    document.body.style.overflow = "hidden";
+    document.getElementById("lbClose").focus();
+  });
+  function close() { lb.hidden = true; document.body.style.overflow = ""; }
+  document.getElementById("lbClose").addEventListener("click", close);
+  lb.addEventListener("click", function (e) { if (e.target === lb) close(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lb.hidden) close(); });
+});
+</script>
+</body>
+</html>
